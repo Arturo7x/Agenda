@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_contact.view.*
  * TODO: Replace the implementation with code for your data type.
  */
 class MyContactRecyclerViewAdapter(
-        private var mValues: MutableList<Contact>?,
+        private var mValues: ArrayList<Contact>?,
         private val mListener: OnListFragmentInteractionListener?)
     : RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder>() {
 
@@ -31,7 +31,7 @@ class MyContactRecyclerViewAdapter(
             val item = v.tag as Contact
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            mListener?.onListFragmentInteraction()
         }
     }
 
