@@ -1,7 +1,9 @@
 package dev.agenda
 
 import android.content.res.Resources
+import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_contact.view.*
  * TODO: Replace the implementation with code for your data type.
  */
 class MyContactRecyclerViewAdapter(
-        private var mValues: ArrayList<Contact>?,
+        private var mValues: MutableList<Contact>?,
         private val mListener: OnListFragmentInteractionListener?)
     : RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder>() {
 
@@ -44,19 +46,21 @@ class MyContactRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues!![position]
         holder.name.text = item.name
-        val imgR  = Resources.getSystem().getIdentifier(item.imageSrc,null,null)
-        holder.image.setImageResource(imgR)
-
-        with(holder.mView) {
+        holder.phone.text = item.phone
+        if( !(item.imageSrc?.contains("drawable",false))!!){
+            holder.image.setImageBitmap(BitmapFactory.decodeFile(item.imageSrc))
+        }
+        /*with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
-        }
+        }*/
     }
 
     override fun getItemCount(): Int = mValues!!.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val name: TextView = mView.contact_name
+        val phone: TextView = mView.contact_phone
         val image: ImageView = mView.contact_img
 
         override fun toString(): String {

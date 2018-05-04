@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.widget.LinearLayout
 import dev.agenda.R.layout.fragment_contact_list
+import dev.agenda.fragmets.BlankFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(),ContactFragment.OnListFragmentInteractionListener {
@@ -22,14 +23,25 @@ class MainActivity : AppCompatActivity(),ContactFragment.OnListFragmentInteracti
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    private val frag = ContactFragment()
+    private val frag2 = BlankFragment()
+    private val fragmentManager = supportFragmentManager
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_favorites -> {
-                message.setText(R.string.title_home)
+                //message.setText(R.string.title_home)
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.viewer, frag)
+                        .commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
-                message.setText(R.string.title_dashboard)
+                //message.setText(R.string.title_dashboard)
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.viewer, frag2)
+                        .commit()
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -45,14 +57,8 @@ class MainActivity : AppCompatActivity(),ContactFragment.OnListFragmentInteracti
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /* val rv = findViewById<RecyclerView>(R.id.list)
-        rv.layoutManager = LinearLayoutManager(this,LinearLayout.VERTICAL,false)
-        val adapter = MyContactRecyclerViewAdapter(null)
-        */
-
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         supportFragmentManager.inTransaction {
-            val frag = ContactFragment()
             add(R.id.viewer, frag  )
         }
     }
