@@ -13,6 +13,12 @@
         android:id="@+id/viewer"
         android:orientation="vertical"/>
 
+    <dev.agenda.adapters.CustomViewPager
+        android:id="@+id/viewPager1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </dev.agenda.adapters.CustomViewPager>
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="0dp"

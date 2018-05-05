@@ -1,17 +1,16 @@
-package dev.agenda
+package dev.agenda.adapters
 
-import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import dev.agenda.R
 
 
-import dev.agenda.ContactFragment.OnListFragmentInteractionListener
+import dev.agenda.fragmets.ContactFragment.OnListFragmentInteractionListener
 import dev.agenda.models.Contact
 
 import kotlinx.android.synthetic.main.fragment_contact.view.*

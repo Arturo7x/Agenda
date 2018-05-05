@@ -1,4 +1,4 @@
-package dev.agenda
+package dev.agenda.fragmets
 
 import android.Manifest
 import android.app.Activity
@@ -20,6 +20,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import dev.agenda.adapters.MyContactRecyclerViewAdapter
+import dev.agenda.R
 
 import dev.agenda.models.Contact
 import java.io.File
