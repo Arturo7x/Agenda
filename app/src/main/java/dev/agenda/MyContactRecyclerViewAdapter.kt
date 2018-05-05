@@ -50,6 +50,20 @@ class MyContactRecyclerViewAdapter(
         if( !(item.imageSrc?.contains("drawable",false))!!){
             holder.image.setImageBitmap(BitmapFactory.decodeFile(item.imageSrc))
         }
+        holder.star.setImageResource( if(item.favorite){
+            R.drawable.favorite
+        }else{
+            R.drawable.favorite_false
+        })
+        holder.star.setOnClickListener {
+            if(!item.favorite){
+                holder.star.setImageResource(R.drawable.favorite)
+                item.favorite = !item.favorite
+            }else{
+                holder.star.setImageResource(R.drawable.favorite_false)
+                item.favorite = !item.favorite
+            }
+        }
         /*with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -62,6 +76,7 @@ class MyContactRecyclerViewAdapter(
         val name: TextView = mView.contact_name
         val phone: TextView = mView.contact_phone
         val image: ImageView = mView.contact_img
+        val star: ImageView = mView.favorite
 
         override fun toString(): String {
             return super.toString() + " '" + name.text + "'"

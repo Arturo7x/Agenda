@@ -39,18 +39,29 @@ class ContactFragment : Fragment() {
     private var columnCount = 1
     private var fAdapter: MyContactRecyclerViewAdapter? = null //fragment adapter
     private var listener: OnListFragmentInteractionListener? = null
+    private var contactsLoader: LoadContacts? = null
+    private val key1: String = "contacts"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
+        Log.i("Call from", "onCreate")
+        contacts = if (savedInstanceState != null)
+            savedInstanceState.getParcelableArrayList(key1)
+        else
+            ArrayList()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_contact_list, container, false)
+        return view
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         // Set the adapter
         if (view is RecyclerView) {
             with(view) {
@@ -63,17 +74,25 @@ class ContactFragment : Fragment() {
                 fAdapter = this.adapter as MyContactRecyclerViewAdapter?
             }
         }
-        loadContacts()
-        return view
+        Log.i("Call from", "onCreateView")
     }
 
-    override fun onPause() {
-        super.onPause()
-        contacts?.clear()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.i("Call from", "onSaveInstanceState")
+        outState.putParcelableArrayList(key1, contacts)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        Log.i("Call from", "onViewStateRestored")
+        if (savedInstanceState != null)
+            contacts = savedInstanceState.getParcelableArrayList(key1)
+        else
+            loadContacts()
     }
 
     override fun onAttach(context: Context) {
-        contacts = ArrayList()
         super.onAttach(context)
         if (context is OnListFragmentInteractionListener) {
             listener = context
@@ -108,21 +127,22 @@ class ContactFragment : Fragment() {
         const val PERMISSIONS_REQUEST_READ_CONTACTS = 100
     }
 
-
     private fun loadContacts() =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
                             this.requireContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                Log.i("Call from", "loadContacts if")
                 requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS),
                         PERMISSIONS_REQUEST_READ_CONTACTS)
                 //callback onRequestPermissionsResult
             } else {
-                //  getContacts()
-                val contactsLoader = LoadContacts(this.activity?.baseContext!!, this.activity!!, this.contacts, this.fAdapter)
-                contactsLoader.execute()
+                Log.i("Call from", "loadContacts else")
+                contactsLoader = LoadContacts(this.activity?.baseContext!!, this.activity!!, this.contacts, this.fAdapter)
+                contactsLoader?.execute()
             }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
                                             grantResults: IntArray) {
+        Log.i("Call from", "OnRequestPermissionsResult")
         if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadContacts()
@@ -305,7 +325,7 @@ class ContactFragment : Fragment() {
                         Log.i(TAG, "name: $displayName")
                         Log.i(TAG, "number: $mobilePhone")
                         Log.i(TAG, "path: $photoPath")
-                        contacts?.add(Contact(displayName, mobilePhone, photoPath))
+                        contacts?.add(Contact(displayName, mobilePhone, photoPath, false))
 
                     }
                     dataCursor.close()
@@ -321,180 +341,5 @@ class ContactFragment : Fragment() {
         }
 
     }
-/*
-    private fun getContacts() {
-        val contactsUri = ContactsContract.Contacts.CONTENT_URI
-
-        // Querying the table ContactsContract.Contacts to retrieve all the
-        // contacts
-        val contactsCursor = this.activity!!.contentResolver.query(contactsUri,
-                null, null, null,
-                ContactsContract.Contacts.DISPLAY_NAME + " ASC ")
-        if (contactsCursor.moveToFirst()) {
-            do {
-                val contactId = contactsCursor.getLong(contactsCursor
-                        .getColumnIndex("_ID"))
-
-                val dataUri = ContactsContract.Data.CONTENT_URI
-
-                // Querying the table ContactsContract.Data to retrieve
-                // individual items like
-                // home phone, mobile phone, work email etc corresponding to
-                // each contact
-                val dataCursor = this.activity!!.contentResolver.query(dataUri,
-                        null,
-                        ContactsContract.Data.CONTACT_ID + "=" + contactId,
-                        null, null)
-
-                var displayName: String?
-                var nickName: String? = ""
-                var homePhone: String? = ""
-                var mobilePhone: String? = ""
-                var workPhone: String? = ""
-                var photoPath: String? = ""
-                var photoByte: ByteArray?
-                var homeEmail: String? = ""
-                var workEmail: String? = ""
-                var companyName: String? = ""
-                var title: String? = ""
-
-                if (dataCursor.moveToFirst()) {
-                    // Getting Display Name
-                    displayName = dataCursor
-                            .getString(dataCursor
-                                    .getColumnIndex(ContactsContract.Data.DISPLAY_NAME))
-                    do {
-
-                        // Getting NickName
-                        if (dataCursor.getString(dataCursor
-                                        .getColumnIndex("mimetype"))
-                                == ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE)
-                            nickName = dataCursor.getString(dataCursor
-                                    .getColumnIndex("data1"))
-
-                        // Getting Phone numbers
-                        if (dataCursor.getString(dataCursor
-                                        .getColumnIndex("mimetype")) ==
-                                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE) {
-                            when (dataCursor.getInt(dataCursor
-                                    .getColumnIndex("data2"))) {
-                                ContactsContract.CommonDataKinds.Phone.TYPE_HOME ->
-                                    homePhone = dataCursor.getString(dataCursor
-                                            .getColumnIndex("data1"))
-                                ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE ->
-                                    mobilePhone = dataCursor
-                                            .getString(dataCursor
-                                                    .getColumnIndex("data1"))
-                                ContactsContract.CommonDataKinds.Phone.TYPE_WORK ->
-                                    workPhone = dataCursor.getString(dataCursor
-                                            .getColumnIndex("data1"))
-                            }
-                        }
-
-                        // Getting EMails
-                        if (dataCursor.getString(dataCursor
-                                        .getColumnIndex("mimetype")) == ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE) {
-                            when (dataCursor.getInt(dataCursor
-                                    .getColumnIndex("data2"))) {
-                                ContactsContract.CommonDataKinds.Email.TYPE_HOME ->
-                                    homeEmail = dataCursor.getString(dataCursor
-                                            .getColumnIndex("data1"))
-
-                                ContactsContract.CommonDataKinds.Email.TYPE_WORK ->
-                                    workEmail = dataCursor.getString(dataCursor
-                                            .getColumnIndex("data1"))
-                            }
-                        }
-
-                        // Getting Organization details
-                        if (dataCursor.getString(dataCursor
-                                        .getColumnIndex("mimetype"))
-                                == ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE) {
-                            companyName = dataCursor.getString(dataCursor
-                                    .getColumnIndex("data1"))
-                            title = dataCursor.getString(dataCursor
-                                    .getColumnIndex("data4"))
-                        }
-
-                        // Getting Photo
-                        if (dataCursor.getString(
-                                        dataCursor.getColumnIndex("mimetype"))
-                                == ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE) {
-                            photoByte = dataCursor.getBlob(dataCursor
-                                    .getColumnIndex("data15"))
-
-                            if (photoByte != null) {
-                                val bitmap = BitmapFactory
-                                        .decodeByteArray(photoByte, 0,
-                                                photoByte.size)
-
-                                // Getting Caching directory
-                                val cacheDirectory = this.activity!!.baseContext.cacheDir
-
-                                // Temporary file to store the contact image
-                                val tmpFile = File(cacheDirectory.path +
-                                        "/tmp" + contactId + ".png")
-
-                                // The FileOutputStream to the temporary
-                                // file
-                                try {
-                                    val fOutStream = FileOutputStream(tmpFile)
-
-                                    // Writing the bitmap to the temporary
-                                    // file as png file
-                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOutStream)
-
-                                    // Flush the FileOutputStream
-                                    fOutStream.flush()
-
-                                    // Close the FileOutputStream
-                                    fOutStream.close()
-
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-
-                                photoPath = tmpFile.path
-                            }
-
-                        }
-
-                    } while (dataCursor.moveToNext())
-
-                    var details = ""
-
-                    // Concatenating various information to single string
-                    if (homePhone != "")
-                        details = "HomePhone : $homePhone\n"
-                    if (mobilePhone != "")
-                        details += "MobilePhone : $mobilePhone\n"
-                    if (workPhone != "")
-                        details += "WorkPhone : $workPhone\n"
-                    if (nickName != "")
-                        details += "NickName : $nickName\n"
-                    if (homeEmail != "")
-                        details += "HomeEmail : $homeEmail\n"
-                    if (workEmail != "")
-                        details += "WorkEmail : $workEmail\n"
-                    if (companyName != "") {
-                        details += "CompanyName : $companyName\n"
-                    }
-                    if (photoPath == "") {
-                        photoPath = "@drawable/user_hd"
-                    }
-                    if (title != "")
-                        details += "Title : $title\n"
-
-                    Log.i(TAG, "name: $displayName")
-                    Log.i(TAG, "number: $mobilePhone")
-                    Log.i(TAG, "path: $photoPath")
-                    contacts?.add(Contact(displayName, mobilePhone, photoPath))
-                }
-                dataCursor.close()
-            } while (contactsCursor.moveToNext())
-            contactsCursor.close()
-        }
-    }
-*/
 }
 

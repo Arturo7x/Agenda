@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
     private val frag = ContactFragment()
     private val frag2 = BlankFragment()
     private val fragmentManager = supportFragmentManager
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val mOnNavigationItemSelectedListener
+            = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_favorites -> {
                 //message.setText(R.string.title_home)
@@ -58,10 +59,12 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        supportFragmentManager.inTransaction {
-            add(R.id.viewer, frag)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.inTransaction {
+                add(R.id.viewer, frag)
+            }
         }
     }
 
