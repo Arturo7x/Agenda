@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_contact.view.*
  * TODO: Replace the implementation with code for your data type.
  */
 class MyContactRecyclerViewAdapter(
-        private var mValues: MutableList<Contact>?,
+        private var mValues: ArrayList<Contact>?,
         private val mListener: OnListFragmentInteractionListener?)
     : RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder>() {
 

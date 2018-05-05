@@ -18,7 +18,8 @@ import dev.agenda.R.layout.fragment_contact_list
 import dev.agenda.fragmets.BlankFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(),ContactFragment.OnListFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteractionListener {
+
     override fun onListFragmentInteraction() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity(),ContactFragment.OnListFragmentInteracti
         }
         false
     }
+
     private inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
         val fragmentTransaction = beginTransaction()
         fragmentTransaction.func()
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity(),ContactFragment.OnListFragmentInteracti
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         supportFragmentManager.inTransaction {
-            add(R.id.viewer, frag  )
+            add(R.id.viewer, frag)
         }
     }
 

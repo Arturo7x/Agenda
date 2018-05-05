@@ -24,8 +24,10 @@ import android.view.ViewGroup
 import dev.agenda.models.Contact
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.ref.WeakReference
 
 
+@Suppress("IMPLICIT_CAST_TO_ANY")
 /**
  * A fragment representing a list of Items.
  * Activities containing this fragment MUST implement the
@@ -33,18 +35,16 @@ import java.io.FileOutputStream
  */
 class ContactFragment : Fragment() {
 
-    private var contacts: MutableList<Contact>? = ArrayList()
+    private var contacts: ArrayList<Contact>? = null
     private var columnCount = 1
-
+    private var fAdapter: MyContactRecyclerViewAdapter? = null //fragment adapter
     private var listener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
-        loadContacts()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -58,14 +58,22 @@ class ContactFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                Log.i("Size of contacts:"," {${contacts?.size}}")
+                Log.i("Size of contacts:", " {${contacts?.size}}")
                 adapter = MyContactRecyclerViewAdapter(contacts, listener)
+                fAdapter = this.adapter as MyContactRecyclerViewAdapter?
             }
         }
+        loadContacts()
         return view
     }
 
+    override fun onPause() {
+        super.onPause()
+        contacts?.clear()
+    }
+
     override fun onAttach(context: Context) {
+        contacts = ArrayList()
         super.onAttach(context)
         if (context is OnListFragmentInteractionListener) {
             listener = context
@@ -109,7 +117,7 @@ class ContactFragment : Fragment() {
                 //callback onRequestPermissionsResult
             } else {
                 //  getContacts()
-                val contactsLoader = LoadContacts(this.activity?.baseContext!!, this.activity!!, this.contacts!!)
+                val contactsLoader = LoadContacts(this.activity?.baseContext!!, this.activity!!, this.contacts, this.fAdapter)
                 contactsLoader.execute()
             }
 
@@ -124,16 +132,22 @@ class ContactFragment : Fragment() {
         }
     }
 
-    class LoadContacts(val baseContext : Context, val activity: Activity, private val contacts : MutableList<Contact>) : AsyncTask<Void, Void, Void>(){
+    class LoadContacts(context: Context, activity: Activity, private val contacts: ArrayList<Contact>?, private val adapter: MyContactRecyclerViewAdapter?) : AsyncTask<Void, Void, Void>() {
+
+        private val context: WeakReference<Context> = WeakReference(context)
+        private val act: WeakReference<Activity> = WeakReference(activity)
+
         override fun doInBackground(vararg params: Void?): Void? {
+            val baseContext = context.get()
+            val activity = act.get()
             val contactsUri = ContactsContract.Contacts.CONTENT_URI
 
             // Querying the table ContactsContract.Contacts to retrieve all the
             // contacts
-            val contactsCursor = activity.contentResolver.query(contactsUri,
+            val contactsCursor = activity?.contentResolver?.query(contactsUri,
                     null, null, null,
                     ContactsContract.Contacts.DISPLAY_NAME + " ASC ")
-            if (contactsCursor.moveToFirst()) {
+            if (contactsCursor?.moveToFirst()!!) {
                 do {
                     val contactId = contactsCursor.getLong(contactsCursor
                             .getColumnIndex("_ID"))
@@ -144,7 +158,7 @@ class ContactFragment : Fragment() {
                     // individual items like
                     // home phone, mobile phone, work email etc corresponding to
                     // each contact
-                    val dataCursor = this.activity.contentResolver.query(dataUri,
+                    val dataCursor = activity.contentResolver.query(dataUri,
                             null,
                             ContactsContract.Data.CONTACT_ID + "=" + contactId,
                             null, null)
@@ -232,10 +246,10 @@ class ContactFragment : Fragment() {
                                                     photoByte.size)
 
                                     // Getting Caching directory
-                                    val cacheDirectory = baseContext.cacheDir
+                                    val cacheDirectory = baseContext?.cacheDir
 
                                     // Temporary file to store the contact image
-                                    val tmpFile = File(cacheDirectory.path +
+                                    val tmpFile = File((cacheDirectory?.path) +
                                             "/tmp" + contactId + ".png")
 
                                     // The FileOutputStream to the temporary
@@ -292,12 +306,18 @@ class ContactFragment : Fragment() {
                         Log.i(TAG, "number: $mobilePhone")
                         Log.i(TAG, "path: $photoPath")
                         contacts?.add(Contact(displayName, mobilePhone, photoPath))
+
                     }
                     dataCursor.close()
                 } while (contactsCursor.moveToNext())
                 contactsCursor.close()
             }
             return null
+        }
+
+        override fun onPostExecute(result: Void?) {
+            super.onPostExecute(result)
+            adapter?.notifyDataSetChanged()
         }
 
     }
