@@ -108,20 +108,8 @@ class ContactFragment : Fragment() {
         listener = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson
-     * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
     interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onListFragmentInteraction()
+        fun onListFragmentInteraction( contact : Contact, pos : Int, v : View)
     }
 
     companion object {
@@ -154,6 +142,10 @@ class ContactFragment : Fragment() {
         }
     }
 
+    fun unFav( contact: Contact){
+        contacts?.indexOf(contact)?.let { contacts?.get(it)?.favorite = false }
+        fAdapter?.notifyDataSetChanged()
+    }
     class LoadContacts(context: Context, activity: Activity, private val contacts: ArrayList<Contact>?, private val adapter: MyContactRecyclerViewAdapter?) : AsyncTask<Void, Void, Void>() {
 
         private val context: WeakReference<Context> = WeakReference(context)

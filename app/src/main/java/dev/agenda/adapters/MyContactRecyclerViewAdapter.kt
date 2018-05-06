@@ -11,6 +11,7 @@ import dev.agenda.R
 
 
 import dev.agenda.fragmets.ContactFragment.OnListFragmentInteractionListener
+import dev.agenda.fragmets.FavoriteFragment
 import dev.agenda.models.Contact
 
 import kotlinx.android.synthetic.main.fragment_contact.view.*
@@ -20,19 +21,32 @@ import kotlinx.android.synthetic.main.fragment_contact.view.*
  * specified [OnListFragmentInteractionListener].
  * TODO: Replace the implementation with code for your data type.
  */
-class MyContactRecyclerViewAdapter(
-        private var mValues: ArrayList<Contact>?,
-        private val mListener: OnListFragmentInteractionListener?)
-    : RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder>() {
+class MyContactRecyclerViewAdapter
+    : RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder>{
 
-    private val mOnClickListener: View.OnClickListener
+    private var mValues: ArrayList<Contact>?
+    private var mListener: OnListFragmentInteractionListener? = null
+    private var mOnClickListener: View.OnClickListener? = null
 
-    init {
+    constructor(mValues: ArrayList<Contact>?, mListener: OnListFragmentInteractionListener?) : super() {
+        this.mValues = mValues
+        this.mListener = mListener
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as Contact
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction()
+            mValues?.indexOf(item)?.let { mListener?.onListFragmentInteraction(item, it, v) }
+        }
+    }
+
+    constructor(mValues: ArrayList<Contact>?, mListener: FavoriteFragment.OnListFragmentFragmentInteractionListener ) : super() {
+        this.mValues = mValues
+        this.mListener = mListener
+        mOnClickListener = View.OnClickListener { v ->
+            val item = v.tag as Contact
+            // Notify the active callbacks interface (the activity, if the fragment is attached to
+            // one) that an item has been selected.
+            mValues?.indexOf(item)?.let { mListener.onFavFragmentInterActionListener(item, it,v) }
         }
     }
 
@@ -54,19 +68,17 @@ class MyContactRecyclerViewAdapter(
         }else{
             R.drawable.favorite_false
         })
-        holder.star.setOnClickListener {
-            if(!item.favorite){
-                holder.star.setImageResource(R.drawable.favorite)
-                item.favorite = !item.favorite
-            }else{
-                holder.star.setImageResource(R.drawable.favorite_false)
-                item.favorite = !item.favorite
+        if( mListener is FavoriteFragment.OnListFragmentFragmentInteractionListener){
+            with( holder.star){
+                tag = item
+                setOnClickListener(mOnClickListener)
+            }
+        }else{
+            with(holder.star) {
+                tag = item
+                setOnClickListener(mOnClickListener)
             }
         }
-        /*with(holder.mView) {
-            tag = item
-            setOnClickListener(mOnClickListener)
-        }*/
     }
 
     override fun getItemCount(): Int = mValues!!.size
