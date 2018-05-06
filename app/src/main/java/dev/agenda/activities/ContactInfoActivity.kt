@@ -10,6 +10,9 @@ import dev.agenda.models.Contact
 
 import kotlinx.android.synthetic.main.activity_contact_info.*
 import kotlinx.android.synthetic.main.content_contact_info.*
+import android.support.v4.app.NavUtils
+import android.view.MenuItem
+
 
 class ContactInfoActivity : AppCompatActivity() {
 
@@ -43,5 +46,15 @@ class ContactInfoActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-
+/*
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            val intent = NavUtils.getParentActivityIntent(this)
+            intent!!.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            NavUtils.navigateUpTo(this, intent)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+*/
 }

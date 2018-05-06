@@ -1,6 +1,5 @@
 package dev.agenda.adapters
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -12,16 +11,14 @@ import android.widget.TextView
 import dev.agenda.R
 
 
-import dev.agenda.fragmets.ContactFragment.OnListFragmentInteractionListener
 import dev.agenda.fragmets.FavoriteFragment
 import dev.agenda.models.Contact
 
 import kotlinx.android.synthetic.main.fragment_contact.view.*
 
-class MyContactRecyclerViewAdapter// Notify the active callbacks interface (the activity, if the fragment is attached to
-// one) that an item has been selected.
-(private var mValues: ArrayList<Contact>?, private var mListener: OnListFragmentInteractionListener?)
-    : RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder>() {
+class MyFavoriteRecyclerViewAdapter
+(private var mValues: ArrayList<Contact>?, private var mListener: FavoriteFragment.OnListFragmentFragmentInteractionListener)
+    : RecyclerView.Adapter<MyFavoriteRecyclerViewAdapter.ViewHolder>() {
 
     private var mOnClickListener: View.OnClickListener? = null
     private var mOnClickListenerIntent: View.OnClickListener? = null
@@ -57,7 +54,6 @@ class MyContactRecyclerViewAdapter// Notify the active callbacks interface (the 
             tag = item
             setOnClickListener(mOnClickListener)
         }
-
     }
 
     override fun getItemCount(): Int = mValues!!.size
@@ -76,13 +72,11 @@ class MyContactRecyclerViewAdapter// Notify the active callbacks interface (the 
     init {
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as Contact
-            // Notify the active callbacks interface (the activity, if the fragment is attached to
-            // one) that an item has been selected.
-            mValues?.indexOf(item)?.let { mListener?.onListFragmentInteraction(item, it, v) }
+            mValues?.indexOf(item)?.let { mListener.onFavFragmentInterActionListener(item, it, v) }
         }
         mOnClickListenerIntent = View.OnClickListener { v ->
             val item = v.tag as Contact
-            mListener?.showContact(item)
+            mListener.showContact(item)
         }
     }
 }

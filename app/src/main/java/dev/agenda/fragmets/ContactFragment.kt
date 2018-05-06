@@ -58,8 +58,7 @@ class ContactFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_contact_list, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_contact_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -110,7 +109,7 @@ class ContactFragment : Fragment() {
 
     interface OnListFragmentInteractionListener {
         fun onListFragmentInteraction(contact: Contact, pos: Int, v: View)
-        fun showContact( contact: Contact)
+        fun showContact(contact: Contact)
     }
 
     companion object {
@@ -318,9 +317,9 @@ class ContactFragment : Fragment() {
                         if (title != "")
                             details += "Title : $title\n"
 
-                        Log.i(TAG, "name: $displayName")
+                        /* Log.i(TAG, "name: $displayName")
                         Log.i(TAG, "number: $mobilePhone")
-                        Log.i(TAG, "path: $photoPath")
+                        Log.i(TAG, "path: $photoPath")*/
                         if (homePhone == "") {
                             contacts?.add(Contact(displayName, mobilePhone, photoPath, false))
                         } else {
@@ -335,6 +334,7 @@ class ContactFragment : Fragment() {
                 } while (contactsCursor.moveToNext())
                 contactsCursor.close()
             }
+            Log.i(TAG, "${contacts?.size} contacts loaded")
             return null
         }
 

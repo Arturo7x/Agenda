@@ -46,8 +46,10 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
         adapter.addFragment(favoriteFragment, "favoriteFragment")
         viewPager?.adapter = adapter
         if (savedInstanceState == null) {
+            Log.i("Main Activity","bundle state is null")
             viewPager?.currentItem = 0
         }else{
+            Log.i("Main Activity","Restoring state")
             contactFragment = supportFragmentManager.getFragment(savedInstanceState,"contactFragment") as ContactFragment
             favoriteFragment = supportFragmentManager.getFragment(savedInstanceState,"favoriteFragment") as FavoriteFragment
             viewPager?.currentItem = savedInstanceState.getInt("page")
@@ -58,7 +60,7 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
         super.onSaveInstanceState(outState)
         Log.i("Main Activity","Saving state")
         supportFragmentManager.putFragment(outState,"contactFragment",contactFragment)
-        supportFragmentManager.putFragment(outState,"favoriteFragment",contactFragment)
+        supportFragmentManager.putFragment(outState,"favoriteFragment",favoriteFragment)
         viewPager?.currentItem?.let { outState?.putInt("page", it) }
     }
 

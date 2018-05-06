@@ -10,8 +10,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dev.agenda.adapters.MyContactRecyclerViewAdapter
 import dev.agenda.R
+import dev.agenda.adapters.MyFavoriteRecyclerViewAdapter
 
 import dev.agenda.models.Contact
 
@@ -24,7 +24,7 @@ class FavoriteFragment : Fragment() {
 
     private var contacts: ArrayList<Contact>? = null
     private var columnCount = 1
-    private var fAdapter: MyContactRecyclerViewAdapter? = null //fragment adapter
+    private var fAdapter: MyFavoriteRecyclerViewAdapter? = null //fragment adapter
     private var listener: OnListFragmentFragmentInteractionListener? = null
     private val key1: String = "favorites"
 
@@ -42,8 +42,7 @@ class FavoriteFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_contact_list, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_contact_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,9 +54,15 @@ class FavoriteFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                Log.i("F Size of contacts:", " {${contacts?.size}}")
-                adapter = MyContactRecyclerViewAdapter(contacts,listener as OnListFragmentFragmentInteractionListener)
-                fAdapter = this.adapter as MyContactRecyclerViewAdapter?
+                Log.i("Favorites Call from", "onCreateView bundle != null")
+                if (savedInstanceState != null) {
+                    contacts = savedInstanceState.getParcelableArrayList(key1)
+                    contacts?.size?.let { fAdapter?.notifyItemRangeChanged(0, it) }
+                    fAdapter?.notifyDataSetChanged()
+                }
+                Log.i("Fav Size of contacts:", " {${contacts?.size}}")
+                adapter = listener?.let { MyFavoriteRecyclerViewAdapter(contacts, it) }
+                fAdapter = this.adapter as MyFavoriteRecyclerViewAdapter?
             }
         }
         Log.i("Favorites Call from", "onCreateView")
@@ -69,18 +74,9 @@ class FavoriteFragment : Fragment() {
         outState.putParcelableArrayList(key1, contacts)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        Log.i("Favorites Call from", "onViewStateRestored")
-        if (savedInstanceState != null) {
-            contacts = savedInstanceState.getParcelableArrayList(key1)
-            contacts?.size?.let { fAdapter?.notifyItemRangeChanged(0, it) }
-            fAdapter?.notifyDataSetChanged()
-        }
-    }
-
-    interface OnListFragmentFragmentInteractionListener : ContactFragment.OnListFragmentInteractionListener {
-        fun onFavFragmentInterActionListener(contact:Contact, pos: Int, v : View)
+    interface OnListFragmentFragmentInteractionListener {
+        fun onFavFragmentInterActionListener(contact: Contact, pos: Int, v: View)
+        fun showContact(contact: Contact)
     }
 
     companion object {
@@ -96,13 +92,13 @@ class FavoriteFragment : Fragment() {
         }
     }
 
-    fun addFavorite( contact: Contact, pos: Int){
+    fun addFavorite(contact: Contact, pos: Int) {
         this.contacts?.add(contact)
         contacts?.indexOf(contact)?.let { fAdapter?.notifyItemInserted(it) }
         contacts?.size?.let { fAdapter?.notifyItemRangeChanged(pos, it) }
     }
 
-    fun removeFavorite( contact: Contact){
+    fun removeFavorite(contact: Contact) {
         val pos = contacts?.indexOf(contact)
         this.contacts?.remove(contact)
         pos?.let { fAdapter?.notifyItemRemoved(it) }
