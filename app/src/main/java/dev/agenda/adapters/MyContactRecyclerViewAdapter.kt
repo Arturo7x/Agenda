@@ -1,7 +1,9 @@
 package dev.agenda.adapters
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,11 +24,12 @@ import kotlinx.android.synthetic.main.fragment_contact.view.*
  * TODO: Replace the implementation with code for your data type.
  */
 class MyContactRecyclerViewAdapter
-    : RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder>{
+    : RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder> {
 
     private var mValues: ArrayList<Contact>?
     private var mListener: OnListFragmentInteractionListener? = null
     private var mOnClickListener: View.OnClickListener? = null
+    private var mOnClickListenerIntent: View.OnClickListener? = null
 
     constructor(mValues: ArrayList<Contact>?, mListener: OnListFragmentInteractionListener?) : super() {
         this.mValues = mValues
@@ -37,16 +40,24 @@ class MyContactRecyclerViewAdapter
             // one) that an item has been selected.
             mValues?.indexOf(item)?.let { mListener?.onListFragmentInteraction(item, it, v) }
         }
+        mOnClickListenerIntent = View.OnClickListener { v ->
+            val item = v.tag as Contact
+            mListener?.showContact(item)
+        }
     }
 
-    constructor(mValues: ArrayList<Contact>?, mListener: FavoriteFragment.OnListFragmentFragmentInteractionListener ) : super() {
+    constructor(mValues: ArrayList<Contact>?, mListener: FavoriteFragment.OnListFragmentFragmentInteractionListener) : super() {
         this.mValues = mValues
         this.mListener = mListener
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as Contact
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mValues?.indexOf(item)?.let { mListener.onFavFragmentInterActionListener(item, it,v) }
+            mValues?.indexOf(item)?.let { mListener.onFavFragmentInterActionListener(item, it, v) }
+        }
+        mOnClickListenerIntent = View.OnClickListener { v ->
+            val item = v.tag as Contact
+            mListener.showContact(item)
         }
     }
 
@@ -60,20 +71,29 @@ class MyContactRecyclerViewAdapter
         val item = mValues!![position]
         holder.name.text = item.name
         holder.phone.text = item.phone
-        if( !(item.imageSrc?.contains("drawable",false))!!){
+
+        if (!(item.imageSrc?.contains("drawable", false))!!) {
             holder.image.setImageBitmap(BitmapFactory.decodeFile(item.imageSrc))
         }
-        holder.star.setImageResource( if(item.favorite){
+
+        holder.star.setImageResource(if (item.favorite) {
             R.drawable.favorite
-        }else{
+        } else {
             R.drawable.favorite_false
         })
-        if( mListener is FavoriteFragment.OnListFragmentFragmentInteractionListener){
-            with( holder.star){
+
+        with(holder.mView) {
+            Log.i("Test", "Clicked")
+            tag = item
+            setOnClickListener(mOnClickListenerIntent)
+        }
+
+        if (mListener is FavoriteFragment.OnListFragmentFragmentInteractionListener) {
+            with(holder.star) {
                 tag = item
                 setOnClickListener(mOnClickListener)
             }
-        }else{
+        } else {
             with(holder.star) {
                 tag = item
                 setOnClickListener(mOnClickListener)

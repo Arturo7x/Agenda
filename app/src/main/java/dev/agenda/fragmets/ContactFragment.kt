@@ -109,7 +109,8 @@ class ContactFragment : Fragment() {
     }
 
     interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction( contact : Contact, pos : Int, v : View)
+        fun onListFragmentInteraction(contact: Contact, pos: Int, v: View)
+        fun showContact( contact: Contact)
     }
 
     companion object {
@@ -142,10 +143,11 @@ class ContactFragment : Fragment() {
         }
     }
 
-    fun unFav( contact: Contact){
+    fun unFav(contact: Contact) {
         contacts?.indexOf(contact)?.let { contacts?.get(it)?.favorite = false }
         fAdapter?.notifyDataSetChanged()
     }
+
     class LoadContacts(context: Context, activity: Activity, private val contacts: ArrayList<Contact>?, private val adapter: MyContactRecyclerViewAdapter?) : AsyncTask<Void, Void, Void>() {
 
         private val context: WeakReference<Context> = WeakReference(context)
@@ -319,7 +321,14 @@ class ContactFragment : Fragment() {
                         Log.i(TAG, "name: $displayName")
                         Log.i(TAG, "number: $mobilePhone")
                         Log.i(TAG, "path: $photoPath")
-                        contacts?.add(Contact(displayName, mobilePhone, photoPath, false))
+                        if (homePhone == "") {
+                            contacts?.add(Contact(displayName, mobilePhone, photoPath, false))
+                        } else {
+                            contacts?.add(
+                                    Contact(displayName, mobilePhone, photoPath, false,
+                                            homePhone, workPhone, nickName, homeEmail, workEmail,
+                                            companyName, title))
+                        }
 
                     }
                     dataCursor.close()

@@ -66,9 +66,10 @@
 
         <ImageView
             android:id="@+id/favorite"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_margin="4dp"
+            android:padding="8dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/text_fav_description"
             android:src="@drawable/favorite_false"

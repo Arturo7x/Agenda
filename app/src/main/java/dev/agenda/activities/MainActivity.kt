@@ -1,13 +1,15 @@
-package dev.agenda
+package dev.agenda.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import dev.agenda.R
 import dev.agenda.adapters.CustomViewPager
-import dev.agenda.adapters.MyContactRecyclerViewAdapter
 import dev.agenda.adapters.ViewPagerAdapter
 import dev.agenda.fragmets.ContactFragment
 import dev.agenda.fragmets.FavoriteFragment
@@ -20,7 +22,7 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
     private var contactFragment = ContactFragment()
     private var favoriteFragment = FavoriteFragment()
     private var viewPager: CustomViewPager? = null
-    private val adapter: ViewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
+    private var adapter: ViewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_favorites -> {
@@ -46,12 +48,17 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
         if (savedInstanceState == null) {
             viewPager?.currentItem = 0
         }else{
+            contactFragment = supportFragmentManager.getFragment(savedInstanceState,"contactFragment") as ContactFragment
+            favoriteFragment = supportFragmentManager.getFragment(savedInstanceState,"favoriteFragment") as FavoriteFragment
             viewPager?.currentItem = savedInstanceState.getInt("page")
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
+        Log.i("Main Activity","Saving state")
+        supportFragmentManager.putFragment(outState,"contactFragment",contactFragment)
+        supportFragmentManager.putFragment(outState,"favoriteFragment",contactFragment)
         viewPager?.currentItem?.let { outState?.putInt("page", it) }
     }
 
@@ -69,6 +76,15 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
     override fun onFavFragmentInterActionListener(contact: Contact, pos: Int, v: View) {
         contactFragment.unFav(contact)
         removeContact(contact)
+    }
+
+    override fun showContact(contact: Contact) {
+        val intent = Intent(this,ContactInfoActivity::class.java)
+        intent.action = Intent.ACTION_SEND
+        val bundle = Bundle()
+        bundle.putParcelable("contact",contact)
+        intent.putExtra("contact",bundle)
+        startActivity(intent)
     }
 
     private fun addContact(contact: Contact, pos: Int) {

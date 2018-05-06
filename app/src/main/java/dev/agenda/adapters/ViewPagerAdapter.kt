@@ -5,10 +5,11 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.util.SparseArray
 import android.view.ViewGroup
+import java.io.Serializable
 import java.lang.ref.WeakReference
 
 
-class ViewPagerAdapter( manager : FragmentManager) : FragmentPagerAdapter( manager){
+class ViewPagerAdapter( manager : FragmentManager) : FragmentPagerAdapter( manager), Serializable {
     private val instantiatedFragments = SparseArray<WeakReference<Fragment>>()
     private val mFragmentList : ArrayList<Fragment> = ArrayList()
     private val mFragmentTitleList : ArrayList<String> = ArrayList()

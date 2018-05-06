@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Agenda</string>
-    <string name="search">Search</string>
+    <string name="contacts">Contacts</string>
     <string name="favorites">Favorites</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_home">Home</string>
@@ -11,7 +11,15 @@
     <string name="text_placeholder_name">Dr.Place Holder</string>
     <string name="text_fav_description">Star to mark favs</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_contact_info">ContactInfoActivity</string>
+    <string name="text_display_name">Display Name</string>
+    <string name="mobile_phone">Mobile Phone</string>
+    <string name="home_phone">Home phone</string>
+    <string name="work_phone">Work Phone</string>
+    <string name="nickname">Nickname</string>
+    <string name="home_email">Home Email</string>
+    <string name="work_email">Work Email</string>
+    <string name="company_name">Company Name</string>
 
 </resources>

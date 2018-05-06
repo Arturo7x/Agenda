@@ -5,8 +5,9 @@ import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
+import java.io.Serializable
 
-class CustomViewPager : ViewPager {
+class CustomViewPager : ViewPager, Serializable {
     var isPagingEnabled: Boolean = true
 
     constructor(context: Context) : super(context)

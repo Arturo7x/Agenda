@@ -3,12 +3,55 @@ package dev.agenda.models
 import android.os.Parcel
 import android.os.Parcelable
 
-class Contact(val name: String, var phone: String?, var imageSrc: String?, var favorite : Boolean) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readByte() != 0.toByte()) {
+
+class Contact() : Parcelable {
+    lateinit var name: String
+    var phone: String? = null
+    var imageSrc: String? = null
+    var favorite: Boolean = false
+    var homePhone: String? = null
+    var workPhone: String? = null
+    var nickName: String? = null
+    var homeEmail: String? = null
+    var workEmail: String? = null
+    var companyName: String? = null
+    var title: String? = null
+
+    constructor(parcel: Parcel) : this() {
+        name = parcel.readString()
+        phone = parcel.readString()
+        imageSrc = parcel.readString()
+        favorite = parcel.readByte() != 0.toByte()
+        homePhone = parcel.readString()
+        workPhone = parcel.readString()
+        nickName = parcel.readString()
+        homeEmail = parcel.readString()
+        workEmail = parcel.readString()
+        companyName = parcel.readString()
+        title = parcel.readString()
+    }
+
+    constructor(name: String, phone: String?, imageSrc: String?, favorite: Boolean) : this() {
+        this.name = name
+        this.phone = phone
+        this.imageSrc = imageSrc
+        this.favorite = favorite
+    }
+
+    constructor(name: String, phone: String?, imageSrc: String?, favorite: Boolean,
+                homePhone: String?, workPhone: String?, nickName: String?, homeEmail: String?,
+                workEmail: String?, companyName: String?, title: String?) : this() {
+        this.name = name
+        this.phone = phone
+        this.imageSrc = imageSrc
+        this.favorite = favorite
+        this.homePhone = homePhone
+        this.workPhone = workPhone
+        this.nickName = nickName
+        this.homeEmail = homeEmail
+        this.workEmail = workEmail
+        this.companyName = companyName
+        this.title = title
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -16,6 +59,13 @@ class Contact(val name: String, var phone: String?, var imageSrc: String?, var f
         parcel.writeString(phone)
         parcel.writeString(imageSrc)
         parcel.writeByte(if (favorite) 1 else 0)
+        parcel.writeString(homePhone)
+        parcel.writeString(workPhone)
+        parcel.writeString(nickName)
+        parcel.writeString(homeEmail)
+        parcel.writeString(workEmail)
+        parcel.writeString(companyName)
+        parcel.writeString(title)
     }
 
     override fun describeContents(): Int {
@@ -31,4 +81,5 @@ class Contact(val name: String, var phone: String?, var imageSrc: String?, var f
             return arrayOfNulls(size)
         }
     }
+
 }
