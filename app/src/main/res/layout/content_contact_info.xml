@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fillViewport="false"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.ContactInfoActivity"
     tools:showIn="@layout/activity_contact_info">
@@ -15,20 +15,42 @@
         android:layout_height="wrap_content">
 
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/activity_user_image"
+        <View
             android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#cfd8dc">
+        </View>
+        <RelativeLayout
+            android:id="@+id/image_container"
+            android:layout_width="match_parent"
+            android:layout_height="150dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_centerHorizontal="true"
+            android:id="@+id/activity_user_image"
+            android:layout_width="150dp"
             android:layout_height="150dp"
-            android:minHeight="150dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:src="@drawable/user"
+            android:minHeight="150dp"
+            android:src="@drawable/user_hd"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"/>
+        <Button
+            android:layout_width="48dp"
+            android:id="@+id/add_photo"
+            android:layout_height="48dp"
+            android:background="@drawable/oval"
+            android:layout_alignRight="@+id/activity_user_image"
+            android:layout_alignParentBottom="true"
+            android:text="@string/plus_sign"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:layout_alignEnd="@+id/activity_user_image" />
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -42,7 +64,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_user_image">
+            app:layout_constraintTop_toBottomOf="@+id/image_container">
 
             <TextView
                 android:id="@+id/activity_display_name"

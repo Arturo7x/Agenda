@@ -39,7 +39,7 @@ class ContactFragment : Fragment() {
 
     private var contacts: ArrayList<Contact>? = null
     private var columnCount = 1
-    private var fAdapter: MyContactRecyclerViewAdapter? = null //fragment adapter
+    var fAdapter: MyContactRecyclerViewAdapter? = null //fragment adapter
     private var listener: OnListFragmentInteractionListener? = null
     private var contactsLoader: LoadContacts? = null
     private val key1: String = "contacts"
@@ -108,7 +108,7 @@ class ContactFragment : Fragment() {
     }
 
     interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(contact: Contact, pos: Int, v: View)
+        fun onListFragmentInteraction( contact: Contact, pos: Int, v: View)
         fun showContact(contact: Contact)
     }
 

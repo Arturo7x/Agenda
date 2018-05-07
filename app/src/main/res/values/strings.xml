@@ -24,6 +24,9 @@
 
     <string name="dialog_title"> Make call to: </string>
     <string name="text_cancel"> Cancel </string>
+    <string name="text_search">Search</string>
+    <string name="plus_sign">+</string>
+    <string name="text_add">Add</string>
     <string-array name="call_options">
         <item> Mobile Phone</item>
         <item> Home Phone</item>

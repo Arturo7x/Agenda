@@ -7,11 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-    <dev.agenda.adapters.CustomViewPager
-        android:id="@+id/viewPager1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </dev.agenda.adapters.CustomViewPager>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -24,5 +19,23 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/navigation" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <dev.agenda.adapters.CustomViewPager
+            android:id="@+id/viewPager1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </dev.agenda.adapters.CustomViewPager>
+
+    </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>

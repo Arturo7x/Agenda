@@ -5,22 +5,43 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.View
 import dev.agenda.R
 import dev.agenda.models.Contact
 
 import kotlinx.android.synthetic.main.activity_contact_info.*
 import kotlinx.android.synthetic.main.content_contact_info.*
 import dev.agenda.dialogs.MakeCallDialogFragment
+import dev.agenda.fragmets.ContactFragment
 
 
-class ContactInfoActivity : AppCompatActivity() {
+class ContactInfoActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteractionListener {
+    override fun onListFragmentInteraction(contact: Contact, pos: Int, v: View) {
+        contact.name = this.contact?.name!!
+    }
+
+    override fun showContact(contact: Contact) {
+    }
 
     private var contact: Contact? = null
     private var numbers: ArrayList<String?> = ArrayList()
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val save = menu?.findItem(R.id.save)
+        save?.setOnMenuItemClickListener {
+            true
+        }
+        return true
+    }
+
+    // ACTIVITY LOGIC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contact_info)
+        toolbar.title = contact?.name
         setSupportActionBar(toolbar)
+        supportActionBar?.title = contact?.name
 
 
         val intent = getIntent()
@@ -39,6 +60,15 @@ class ContactInfoActivity : AppCompatActivity() {
                     activity_user_image.setImageBitmap(BitmapFactory.decodeFile(contact?.imageSrc))
                 }
             }
+        }else{
+            activity_display_name_edit.setText("")
+            activity_mobile_phone_edit.setText("")
+            activity_home_phone_edit.setText("")
+            activity_work_phone_edit.setText("")
+            activity_nickname_edit.setText("")
+            activity_home_email_edit.setText("")
+            activity_work_email_edit.setText("")
+            activity_company_name_edit.setText("")
         }
 
         contact?.phone.takeIf { it != null }.apply { numbers.add(this) }

@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SearchView
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -36,7 +39,37 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
         }
         false
     }
+    // APPBAR LOGIC
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.mainmenu, menu)
 
+        val searchItem = menu?.findItem(R.id.navigation_search)
+        val searchView = searchItem?.actionView as SearchView
+
+        val addUser = menu.findItem(R.id.add_user)
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                contactFragment.fAdapter?.filter(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                contactFragment.fAdapter?.filter(newText)
+                return true
+            }
+        })
+
+        addUser.setOnMenuItemClickListener {
+            val intent = Intent(baseContext,ContactInfoActivity::class.java)
+            intent.action = Intent.ACTION_INSERT
+            startActivity(intent)
+            true
+        }
+        return true
+    }
+
+    // ACTIVITY LOGIC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -64,6 +97,7 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
         viewPager?.currentItem?.let { outState?.putInt("page", it) }
     }
 
+    // FRAGMENTS LISTENERS
     override fun onListFragmentInteraction(contact: Contact, pos: Int, v: View) {
         Toast.makeText(applicationContext, " $pos ,${contact.name} added to favorites", Toast.LENGTH_SHORT).show()
         if (!contact.favorite) {
