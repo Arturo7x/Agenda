@@ -37,7 +37,7 @@ class MyFavoriteRecyclerViewAdapter
         holder.name.text = item.name
         holder.phone.text = item.phone
 
-        if (!(item.imageSrc?.contains("drawable", false))!!) {
+        if (!(item.imageSrc?.contains("@drawable/user_hd", false))!!) {
             holder.image.setImageBitmap(BitmapFactory.decodeFile(item.imageSrc))
         }
 

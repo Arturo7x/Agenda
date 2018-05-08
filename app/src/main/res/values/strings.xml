@@ -2,17 +2,15 @@
     <string name="app_name">Agenda</string>
     <string name="contacts">Contacts</string>
     <string name="favorites">Favorites</string>
-    <string name="title_activity_main2">Main2Activity</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="loading_contacts_desc">Loading Contacts</string>
-    <string name="text_placeholder_num">0000–1111</string>
-    <string name="text_placeholder_name">Dr.Place Holder</string>
+    <string name="text_placeholder_num" translatable="false">0000–1111</string>
+    <string name="text_placeholder_name" translatable="false">Dr.Place Holder</string>
     <string name="text_fav_description">Star to mark favorites</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_contact_info">ContactInfoActivity</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="title_activity_contact_info" translatable="false">ContactInfoActivity</string>
     <string name="text_display_name">Display Name</string>
     <string name="mobile_phone">Mobile Phone</string>
     <string name="home_phone">Home phone</string>
@@ -25,7 +23,7 @@
     <string name="dialog_title"> Make call to: </string>
     <string name="text_cancel"> Cancel </string>
     <string name="text_search">Search</string>
-    <string name="plus_sign">+</string>
+    <string name="plus_sign" translatable="false">+</string>
     <string name="text_add">Add</string>
     <string-array name="call_options">
         <item> Mobile Phone</item>

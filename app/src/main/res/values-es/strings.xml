@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Agenda</string>
+    <string name="contacts">Contactos</string>
+    <string name="favorites">Favoritos</string>
+    <string name="title_home">Principal</string>
+    <string name="title_notifications">Notificaciones</string>
+    <string name="loading_contacts_desc">Cargando Contactos</string>
+    <string name="text_fav_description">Estrella para marcar favoritos</string>
+    <string name="text_display_name">Nombre</string>
+    <string name="mobile_phone">Celular</string>
+    <string name="home_phone">Tel. Casa</string>
+    <string name="work_phone">Tel. Trabajo</string>
+    <string name="nickname">Apodo</string>
+    <string name="home_email">Email</string>
+    <string name="work_email">Email Trabajo</string>
+    <string name="company_name">Empresa</string>
+    <string name="dialog_title">Llamar al</string>
+    <string name="text_cancel">Cancelar</string>
+    <string name="text_search">Buscar</string>
+    <string name="text_add">añadir</string>
+</resources>
