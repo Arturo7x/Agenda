@@ -5,9 +5,10 @@ import android.os.Parcelable
 
 
 class Contact() : Parcelable {
-    lateinit var name: String
+    var id: String? = null
+    var name: String? = null
     var phone: String? = null
-    var imageSrc: String? = null
+    var imageSrc: String? = "@drawable/user_hd"
     var favorite: Boolean = false
     var homePhone: String? = null
     var workPhone: String? = null
@@ -19,6 +20,7 @@ class Contact() : Parcelable {
 
     constructor(parcel: Parcel) : this() {
         name = parcel.readString()
+        id = parcel.readString()
         phone = parcel.readString()
         imageSrc = parcel.readString()
         favorite = parcel.readByte() != 0.toByte()
@@ -31,16 +33,18 @@ class Contact() : Parcelable {
         title = parcel.readString()
     }
 
-    constructor(name: String, phone: String?, imageSrc: String?, favorite: Boolean) : this() {
+    constructor(id: String?, name: String, phone: String?, imageSrc: String?, favorite: Boolean) : this() {
+        this.id = id
         this.name = name
         this.phone = phone
         this.imageSrc = imageSrc
         this.favorite = favorite
     }
 
-    constructor(name: String, phone: String?, imageSrc: String?, favorite: Boolean,
+    constructor(id: String?, name: String, phone: String?, imageSrc: String?, favorite: Boolean,
                 homePhone: String?, workPhone: String?, nickName: String?, homeEmail: String?,
                 workEmail: String?, companyName: String?, title: String?) : this() {
+        this.id = id
         this.name = name
         this.phone = phone
         this.imageSrc = imageSrc
@@ -56,6 +60,7 @@ class Contact() : Parcelable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
+        parcel.writeString(id)
         parcel.writeString(phone)
         parcel.writeString(imageSrc)
         parcel.writeByte(if (favorite) 1 else 0)
