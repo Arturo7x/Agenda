@@ -1,5 +1,6 @@
 package dev.agenda.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
         }
         false
     }
+
     // APPBAR LOGIC
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.mainmenu, menu)
@@ -51,19 +53,21 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 contactFragment.fAdapter?.filter(query)
+                favoriteFragment.fAdapter?.filter(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
                 contactFragment.fAdapter?.filter(newText)
+                favoriteFragment.fAdapter?.filter(newText)
                 return true
             }
         })
 
         addUser.setOnMenuItemClickListener {
-            val intent = Intent(baseContext,ContactInfoActivity::class.java)
-            intent.action = Intent.ACTION_INSERT
-            startActivity(intent)
+            val intent = Intent(this, ContactInfoActivity::class.java)
+            intent.putExtra("size", contactFragment.contactsSize())
+            startActivityForResult(intent, 1)
             true
         }
         return true
@@ -79,22 +83,45 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
         adapter.addFragment(favoriteFragment, "favoriteFragment")
         viewPager?.adapter = adapter
         if (savedInstanceState == null) {
-            Log.i("Main Activity","bundle state is null")
+            Log.i("Main Activity", "bundle state is null")
             viewPager?.currentItem = 0
-        }else{
-            Log.i("Main Activity","Restoring state")
-            contactFragment = supportFragmentManager.getFragment(savedInstanceState,"contactFragment") as ContactFragment
-            favoriteFragment = supportFragmentManager.getFragment(savedInstanceState,"favoriteFragment") as FavoriteFragment
+        } else {
+            Log.i("Main Activity", "Restoring state")
+            contactFragment = supportFragmentManager.getFragment(savedInstanceState, "contactFragment") as ContactFragment
+            favoriteFragment = supportFragmentManager.getFragment(savedInstanceState, "favoriteFragment") as FavoriteFragment
             viewPager?.currentItem = savedInstanceState.getInt("page")
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        Log.i("Main Activity","Saving state")
-        supportFragmentManager.putFragment(outState,"contactFragment",contactFragment)
-        supportFragmentManager.putFragment(outState,"favoriteFragment",favoriteFragment)
+        Log.i("Main Activity", "Saving state")
+        supportFragmentManager.putFragment(outState, "contactFragment", contactFragment)
+        supportFragmentManager.putFragment(outState, "favoriteFragment", favoriteFragment)
         viewPager?.currentItem?.let { outState?.putInt("page", it) }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                val c: Contact = data?.extras?.get("contact") as Contact
+                Log.i("Main Activity", "Intent got")
+                contactFragment.insertContact(c)
+            }
+        } else if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
+                val c: Contact = data?.extras?.get("contact") as Contact
+                Log.i("Main Activity", "Item update")
+                if (!c.favorite)
+                    contactFragment.update(c)
+                else {
+                    contactFragment.update(c)
+                    favoriteFragment.update(c)
+                }
+            }
+        }
+
     }
 
     // FRAGMENTS LISTENERS
@@ -115,12 +142,10 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnListFragmentInteract
     }
 
     override fun showContact(contact: Contact) {
-        val intent = Intent(this,ContactInfoActivity::class.java)
+        val intent = Intent(this, ContactInfoActivity::class.java)
         intent.action = Intent.ACTION_SEND
-        val bundle = Bundle()
-        bundle.putParcelable("contact",contact)
-        intent.putExtra("contact",bundle)
-        startActivity(intent)
+        intent.putExtra("contact", contact)
+        startActivityForResult(intent, 2)
     }
 
     private fun addContact(contact: Contact, pos: Int) {
