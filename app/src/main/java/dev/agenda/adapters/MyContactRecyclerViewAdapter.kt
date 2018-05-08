@@ -24,7 +24,7 @@ class MyContactRecyclerViewAdapter// Notify the active callbacks interface (the 
 
     private var mOnClickListener: View.OnClickListener? = null
     private var mOnClickListenerIntent: View.OnClickListener? = null
-    private var contactsCopy: ArrayList<Contact>? = ArrayList()
+    private var contactsCopy: ArrayList<Contact>?
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         Log.i("From Adapter", "${mValues?.size}")
@@ -65,6 +65,14 @@ class MyContactRecyclerViewAdapter// Notify the active callbacks interface (the 
 
     override fun getItemCount(): Int = mValues!!.size
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     fun filter(s: String) {
         var text = s
         mValues?.clear()
@@ -93,6 +101,8 @@ class MyContactRecyclerViewAdapter// Notify the active callbacks interface (the 
     }
 
     init {
+        setHasStableIds(true)
+        this.contactsCopy = ArrayList()
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as Contact
             // Notify the active callbacks interface (the activity, if the fragment is attached to
@@ -104,4 +114,5 @@ class MyContactRecyclerViewAdapter// Notify the active callbacks interface (the 
             mListener?.showContact(item)
         }
     }
+
 }

@@ -61,6 +61,15 @@ class MyFavoriteRecyclerViewAdapter
 
     override fun getItemCount(): Int = mValues!!.size
 
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     fun filter(s: String) {
         var text = s
         mValues?.clear()
@@ -89,6 +98,7 @@ class MyFavoriteRecyclerViewAdapter
     }
 
     init {
+        setHasStableIds(true)
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as Contact
             mValues?.indexOf(item)?.let { mListener.onFavFragmentInterActionListener(item, it, v) }
