@@ -24,7 +24,7 @@ class FavoriteFragment : Fragment() {
 
     private var contacts: ArrayList<Contact>? = null
     private var columnCount = 1
-    private var fAdapter: MyFavoriteRecyclerViewAdapter? = null //fragment adapter
+    var fAdapter: MyFavoriteRecyclerViewAdapter? = null //fragment adapter
     private var listener: OnListFragmentFragmentInteractionListener? = null
     private val key1: String = "favorites"
 
@@ -92,10 +92,18 @@ class FavoriteFragment : Fragment() {
         }
     }
 
+    fun update(contact: Contact) {
+        val i: Int? = contacts?.indexOf(contacts!!.find { it.id == contact.id })
+        Log.i("Contact fragment", "$i")
+        i?.let { contacts?.set(it, contact) }
+        i?.let { fAdapter?.notifyItemChanged(it) }
+    }
+
     fun addFavorite(contact: Contact, pos: Int) {
         this.contacts?.add(contact)
         contacts?.indexOf(contact)?.let { fAdapter?.notifyItemInserted(it) }
         contacts?.size?.let { fAdapter?.notifyItemRangeChanged(pos, it) }
+        fAdapter?.notifyDataSetChanged()
     }
 
     fun removeFavorite(contact: Contact) {
@@ -103,6 +111,7 @@ class FavoriteFragment : Fragment() {
         this.contacts?.remove(contact)
         pos?.let { fAdapter?.notifyItemRemoved(it) }
         contacts?.size?.let { pos?.let { it1 -> fAdapter?.notifyItemRangeChanged(it1, it) } }
+        fAdapter?.notifyDataSetChanged()
     }
 
     override fun onDetach() {

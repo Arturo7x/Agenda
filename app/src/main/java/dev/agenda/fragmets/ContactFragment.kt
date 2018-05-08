@@ -5,8 +5,6 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -24,8 +22,7 @@ import dev.agenda.adapters.MyContactRecyclerViewAdapter
 import dev.agenda.R
 
 import dev.agenda.models.Contact
-import java.io.File
-import java.io.FileOutputStream
+import dev.agenda.utilities.loadImage
 import java.lang.ref.WeakReference
 
 
@@ -108,7 +105,7 @@ class ContactFragment : Fragment() {
     }
 
     interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction( contact: Contact, pos: Int, v: View)
+        fun onListFragmentInteraction(contact: Contact, pos: Int, v: View)
         fun showContact(contact: Contact)
     }
 
@@ -147,6 +144,23 @@ class ContactFragment : Fragment() {
         fAdapter?.notifyDataSetChanged()
     }
 
+    fun update(contact: Contact) {
+        val i: Int? = contacts?.indexOf(contacts!!.find { it.id == contact.id })
+        Log.i("Contact fragment", "$i")
+        i?.let { contacts?.set(it, contact) }
+        i?.let { fAdapter?.notifyItemChanged(it) }
+        fAdapter?.notifyDataSetChanged()
+    }
+
+    fun contactsSize() = contacts?.size
+
+    fun insertContact(contact: Contact) {
+        contacts?.add(contact)
+        contacts?.size?.let { fAdapter?.notifyItemInserted(it) }
+        contacts?.indexOf(contact)?.let { contacts?.size?.let { it1 -> fAdapter?.notifyItemRangeChanged(it, it1) } }
+        fAdapter?.notifyDataSetChanged()
+    }
+
     class LoadContacts(context: Context, activity: Activity, private val contacts: ArrayList<Contact>?, private val adapter: MyContactRecyclerViewAdapter?) : AsyncTask<Void, Void, Void>() {
 
         private val context: WeakReference<Context> = WeakReference(context)
@@ -179,6 +193,7 @@ class ContactFragment : Fragment() {
                             null, null)
 
                     var displayName: String?
+                    val id: String = contactId.toString()
                     var nickName: String? = ""
                     var homePhone: String? = ""
                     var mobilePhone: String? = ""
@@ -256,13 +271,14 @@ class ContactFragment : Fragment() {
                                         .getColumnIndex("data15"))
 
                                 if (photoByte != null) {
-                                    val bitmap = BitmapFactory
+                                    /* val bitmap = BitmapFactory
                                             .decodeByteArray(photoByte, 0,
                                                     photoByte.size)
-
+                                    */
                                     // Getting Caching directory
                                     val cacheDirectory = baseContext?.cacheDir
-
+                                    loadImage(cacheDirectory, contactId.toString(), photoByte)
+                                    /*
                                     // Temporary file to store the contact image
                                     val tmpFile = File((cacheDirectory?.path) +
                                             "/tmp" + contactId + ".png")
@@ -286,45 +302,26 @@ class ContactFragment : Fragment() {
                                         e.printStackTrace()
                                     }
 
-                                    photoPath = tmpFile.path
+                                    photoPath = tmpFile.path*/
                                 }
 
                             }
 
                         } while (dataCursor.moveToNext())
 
-                        var details = ""
-
                         // Concatenating various information to single string
-                        if (homePhone != "")
-                            details = "HomePhone : $homePhone\n"
-                        if (mobilePhone != "")
-                            details += "MobilePhone : $mobilePhone\n"
-                        if (workPhone != "")
-                            details += "WorkPhone : $workPhone\n"
-                        if (nickName != "")
-                            details += "NickName : $nickName\n"
-                        if (homeEmail != "")
-                            details += "HomeEmail : $homeEmail\n"
-                        if (workEmail != "")
-                            details += "WorkEmail : $workEmail\n"
-                        if (companyName != "") {
-                            details += "CompanyName : $companyName\n"
-                        }
                         if (photoPath == "") {
                             photoPath = "@drawable/user_hd"
                         }
-                        if (title != "")
-                            details += "Title : $title\n"
 
                         /* Log.i(TAG, "name: $displayName")
                         Log.i(TAG, "number: $mobilePhone")
                         Log.i(TAG, "path: $photoPath")*/
                         if (homePhone == "") {
-                            contacts?.add(Contact(displayName, mobilePhone, photoPath, false))
+                            contacts?.add(Contact(id, displayName, mobilePhone, photoPath, false))
                         } else {
                             contacts?.add(
-                                    Contact(displayName, mobilePhone, photoPath, false,
+                                    Contact(id, displayName, mobilePhone, photoPath, false,
                                             homePhone, workPhone, nickName, homeEmail, workEmail,
                                             companyName, title))
                         }
@@ -340,7 +337,7 @@ class ContactFragment : Fragment() {
 
         override fun onPostExecute(result: Void?) {
             super.onPostExecute(result)
-            adapter?.notifyDataSetChanged()
+            contacts?.size?.let { adapter?.notifyItemRangeChanged(0, it) }
         }
 
     }
