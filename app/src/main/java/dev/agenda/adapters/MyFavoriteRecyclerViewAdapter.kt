@@ -22,10 +22,13 @@ class MyFavoriteRecyclerViewAdapter
 
     private var mOnClickListener: View.OnClickListener? = null
     private var mOnClickListenerIntent: View.OnClickListener? = null
+    private var contactsCopy: ArrayList<Contact>? = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.fragment_contact, parent, false)
+        if (contactsCopy?.size == 0)
+            contactsCopy?.addAll(this.mValues!!)
         return ViewHolder(view)
     }
 
@@ -57,6 +60,22 @@ class MyFavoriteRecyclerViewAdapter
     }
 
     override fun getItemCount(): Int = mValues!!.size
+
+    fun filter(s: String) {
+        var text = s
+        mValues?.clear()
+        if (text.isEmpty()) {
+            mValues?.addAll(this.contactsCopy!!)
+        } else {
+            text = text.toLowerCase()
+            for (item in this.contactsCopy!!) {
+                if (item.name?.toLowerCase()?.contains(text)!! || item.phone?.toLowerCase()?.contains(text)!!) {
+                    mValues?.add(item)
+                }
+            }
+        }
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val name: TextView = mView.contact_name

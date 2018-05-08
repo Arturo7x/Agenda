@@ -36,11 +36,11 @@ class MyContactRecyclerViewAdapter// Notify the active callbacks interface (the 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mValues!![position]
-        holder.name.text = item.name
-        holder.phone.text = item.phone
+        val item = mValues?.get(position)
+        holder.name.text = item?.name
+        holder.phone.text = item?.phone
 
-        if (!(item.imageSrc?.contains("drawable", false))!!) {
+        if (!(item?.imageSrc?.contains("drawable", false))!!) {
             holder.image.setImageBitmap(BitmapFactory.decodeFile(item.imageSrc))
         }
 
@@ -73,7 +73,7 @@ class MyContactRecyclerViewAdapter// Notify the active callbacks interface (the 
         } else {
             text = text.toLowerCase()
             for (item in this.contactsCopy!!) {
-                if (item.name.toLowerCase().contains(text) || item.phone?.toLowerCase()?.contains(text)!!) {
+                if (item.name?.toLowerCase()?.contains(text)!! || item.phone?.toLowerCase()?.contains(text)!!) {
                     mValues?.add(item)
                 }
             }
