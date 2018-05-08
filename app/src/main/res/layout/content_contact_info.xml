@@ -18,38 +18,39 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="#cfd8dc">
-        </View>
+            android:background="#cfd8dc"></View>
+
         <RelativeLayout
             android:id="@+id/image_container"
             android:layout_width="match_parent"
             android:layout_height="150dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_centerHorizontal="true"
-            android:id="@+id/activity_user_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:minHeight="150dp"
-            android:src="@drawable/user_hd"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-        <Button
-            android:layout_width="48dp"
-            android:id="@+id/add_photo"
-            android:layout_height="48dp"
-            android:background="@drawable/oval"
-            android:layout_alignRight="@+id/activity_user_image"
-            android:layout_alignParentBottom="true"
-            android:text="@string/plus_sign"
-            android:textColor="@android:color/white"
-            android:textSize="28sp"
-            android:layout_alignEnd="@+id/activity_user_image" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/activity_user_image"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:minHeight="150dp"
+                android:src="@drawable/user_hd"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/add_photo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignEnd="@+id/activity_user_image"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/activity_user_image"
+                android:background="@drawable/oval"
+                android:text="@string/plus_sign"
+                android:textColor="@android:color/white"
+                android:textSize="28sp" />
         </RelativeLayout>
 
         <LinearLayout
@@ -79,6 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:minWidth="100dp"
                 android:singleLine="true"
                 android:text="@string/text_placeholder_name" />
 
@@ -111,6 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
+                android:minWidth="100dp"
                 android:singleLine="true"
                 android:text="@string/text_placeholder_num" />
         </LinearLayout>
@@ -142,6 +145,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
+                android:minWidth="100dp"
                 android:singleLine="true"
                 android:text="@string/text_placeholder_num" />
         </LinearLayout>
@@ -173,6 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
+                android:minWidth="100dp"
                 android:singleLine="true"
                 android:text="@string/text_placeholder_num" />
 
@@ -205,6 +210,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:minWidth="100dp"
                 android:singleLine="true"
                 android:text="@string/text_placeholder_name" />
 
@@ -237,6 +243,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:minWidth="100dp"
                 android:singleLine="true"
                 android:text="@string/text_placeholder_name" />
 
@@ -269,6 +276,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:minWidth="100dp"
                 android:singleLine="true"
                 android:text="@string/text_placeholder_name" />
 
@@ -301,6 +309,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:minWidth="100dp"
                 android:singleLine="true"
                 android:text="@string/text_placeholder_name" />
 
